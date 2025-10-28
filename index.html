@@ -457,26 +457,30 @@
             color: #ff6b6b;
         }
 
+        /* Styles pour les écrans mobiles */
         @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
             h1 {
-                font-size: 2rem;
+                font-size: 1.8rem;
+                margin-bottom: 15px;
             }
             
-            .channels-container {
-                grid-template-columns: 1fr;
+            .player-container {
+                padding: 15px;
+                margin-bottom: 20px;
             }
             
-            .controls {
-                flex-direction: column;
-            }
-            
-            .search-container {
-                width: 100%;
+            .video-wrapper {
+                border-radius: 8px;
             }
             
             .video-controls {
                 padding: 15px;
                 gap: 10px;
+                flex-wrap: wrap;
             }
             
             .control-btn {
@@ -485,13 +489,179 @@
                 font-size: 1rem;
             }
             
+            .progress-bar {
+                order: 3;
+                width: 100%;
+                margin-top: 10px;
+            }
+            
             .time-display {
                 min-width: 80px;
                 font-size: 0.8rem;
+                order: 2;
+            }
+            
+            .volume-control {
+                order: 1;
             }
             
             .volume-slider {
                 width: 60px;
+            }
+            
+            .channel-info {
+                padding: 10px;
+            }
+            
+            .channel-logo {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .channel-name {
+                font-size: 1rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .search-container {
+                width: 100%;
+                min-width: auto;
+            }
+            
+            .search-input {
+                padding: 12px 40px 12px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .filter-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .filter-btn {
+                padding: 8px 15px;
+                font-size: 0.8rem;
+            }
+            
+            .channels-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                margin-top: 20px;
+            }
+            
+            .channel-card {
+                padding: 12px;
+            }
+            
+            .channel-card img {
+                width: 50px;
+                height: 50px;
+                margin-right: 12px;
+            }
+            
+            .channel-title {
+                font-size: 0.9rem;
+            }
+            
+            .channel-country {
+                font-size: 0.7rem;
+            }
+            
+            .pagination {
+                margin-top: 20px;
+                gap: 5px;
+            }
+            
+            .page-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 0.8rem;
+            }
+            
+            .error-message {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+        }
+
+        /* Styles pour les très petits écrans */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .player-container {
+                padding: 10px;
+            }
+            
+            .video-controls {
+                padding: 10px;
+            }
+            
+            .control-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
+            }
+            
+            .time-display {
+                font-size: 0.7rem;
+                min-width: 70px;
+            }
+            
+            .volume-slider {
+                width: 50px;
+            }
+            
+            .channel-info {
+                padding: 8px;
+            }
+            
+            .channel-logo {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .channel-name {
+                font-size: 0.9rem;
+            }
+            
+            .search-input {
+                padding: 10px 35px 10px 12px;
+                font-size: 0.85rem;
+            }
+            
+            .filter-btn {
+                padding: 6px 12px;
+                font-size: 0.75rem;
+            }
+            
+            .channel-card {
+                padding: 10px;
+            }
+            
+            .channel-card img {
+                width: 45px;
+                height: 45px;
+                margin-right: 10px;
+            }
+            
+            .channel-title {
+                font-size: 0.85rem;
+            }
+            
+            .channel-country {
+                font-size: 0.65rem;
+            }
+            
+            .page-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 0.7rem;
             }
         }
     </style>
@@ -1033,6 +1203,18 @@ http://87.255.35.150:18848/
 http://87.255.35.150:18818/
 #EXTINF:-1 tvg-id="SOSKanalPlus.rs@SD" tvg-logo="https://i.imgur.com/9SD40uH.png" group-title="Sports",SOS Kanal Plus (720p)
 https://53be5ef2d13aa.streamlock.net/soskanalplus/soskanalplus.stream/playlist.m3u8
+#EXTINF:-1 tvg-id="SportenFrance.fr@SD" tvg-logo="https://i.imgur.com/1IXQoWq.png" group-title="Sports",Sport En France (1080p)
+https://sp1564435593.mytvchain.info/live/sp1564435593/index.m3u8
+#EXTINF:-1 tvg-id="Sportitalia.it@SD" tvg-logo="https://i.imgur.com/0CJGGgd.png" group-title="Sports",Sportitalia (720p) [Geo-blocked]
+https://di-yx2saj20.vo.lswcdn.net/sportitalia/smil:sportitaliahd.smil/playlist.m3u8
+#EXTINF:-1 tvg-id="Sportitalia24.it@SD" tvg-logo="https://i.imgur.com/RSwnoLn.png" group-title="Sports",Sportitalia 24 (720p) [Geo-blocked]
+https://di-yx2saj20.vo.lswcdn.net/sportitalia/smil:silive24.smil/playlist.m3u8
+#EXTINF:-1 tvg-id="SportitaliaMotori.it@SD" tvg-logo="https://i.imgur.com/hu56Ya5.png" group-title="Sports",Sportitalia Motori (720p) [Geo-blocked]
+https://di-yx2saj20.vo.lswcdn.net/sportitalia/smil:simotori.smil/playlist.m3u8
+#EXTINF:-1 tvg-id="SportitaliaSolocalcio.it@SD" tvg-logo="https://i.imgur.com/hu56Ya5.png" group-title="Sports",Sportitalia Solocalcio (720p) [Geo-blocked]
+https://di-yx2saj20.vo.lswcdn.net/sportitalia/smil:sisolocalcio.smil/playlist.m3u8
+#EXTINF:-1 tvg-id="SportsConnect.za@SD" tvg-logo="https://i.imgur.com/0sNWg54.png" group-title="Sports",Sports Connect (720p)
+https://origin3.afxp.telemedia.co.za/PremiumFree/sportsconnect/playlist.m3u8
 #EXTINF:-1 tvg-id="SportenFrance.fr@SD" tvg-logo="https://i.imgur.com/1IXQoWq.png" group-title="Sports",Sport En France (1080p)
 https://sp1564435593.mytvchain.info/live/sp1564435593/index.m3u8
 #EXTINF:-1 tvg-id="Sportitalia.it@SD" tvg-logo="https://i.imgur.com/0CJGGgd.png" group-title="Sports",Sportitalia (720p) [Geo-blocked]
