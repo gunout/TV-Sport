@@ -112,6 +112,13 @@
             border-radius: 0 0 10px 10px;
             backdrop-filter: blur(10px);
             border-top: 1px solid rgba(255, 16, 240, 0.3);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .video-controls.hidden {
+            opacity: 0;
+            transform: translateY(100%);
+            pointer-events: none;
         }
 
         .control-btn {
@@ -457,26 +464,30 @@
             color: #ff6b6b;
         }
 
+        /* Styles pour les écrans mobiles */
         @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
             h1 {
-                font-size: 2rem;
+                font-size: 1.8rem;
+                margin-bottom: 15px;
             }
             
-            .channels-container {
-                grid-template-columns: 1fr;
+            .player-container {
+                padding: 15px;
+                margin-bottom: 20px;
             }
             
-            .controls {
-                flex-direction: column;
-            }
-            
-            .search-container {
-                width: 100%;
+            .video-wrapper {
+                border-radius: 8px;
             }
             
             .video-controls {
                 padding: 15px;
                 gap: 10px;
+                flex-wrap: wrap;
             }
             
             .control-btn {
@@ -485,13 +496,179 @@
                 font-size: 1rem;
             }
             
+            .progress-bar {
+                order: 3;
+                width: 100%;
+                margin-top: 10px;
+            }
+            
             .time-display {
                 min-width: 80px;
                 font-size: 0.8rem;
+                order: 2;
+            }
+            
+            .volume-control {
+                order: 1;
             }
             
             .volume-slider {
                 width: 60px;
+            }
+            
+            .channel-info {
+                padding: 10px;
+            }
+            
+            .channel-logo {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .channel-name {
+                font-size: 1rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .search-container {
+                width: 100%;
+                min-width: auto;
+            }
+            
+            .search-input {
+                padding: 12px 40px 12px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .filter-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .filter-btn {
+                padding: 8px 15px;
+                font-size: 0.8rem;
+            }
+            
+            .channels-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                margin-top: 20px;
+            }
+            
+            .channel-card {
+                padding: 12px;
+            }
+            
+            .channel-card img {
+                width: 50px;
+                height: 50px;
+                margin-right: 12px;
+            }
+            
+            .channel-title {
+                font-size: 0.9rem;
+            }
+            
+            .channel-country {
+                font-size: 0.7rem;
+            }
+            
+            .pagination {
+                margin-top: 20px;
+                gap: 5px;
+            }
+            
+            .page-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 0.8rem;
+            }
+            
+            .error-message {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+        }
+
+        /* Styles pour les très petits écrans */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .player-container {
+                padding: 10px;
+            }
+            
+            .video-controls {
+                padding: 10px;
+            }
+            
+            .control-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
+            }
+            
+            .time-display {
+                font-size: 0.7rem;
+                min-width: 70px;
+            }
+            
+            .volume-slider {
+                width: 50px;
+            }
+            
+            .channel-info {
+                padding: 8px;
+            }
+            
+            .channel-logo {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .channel-name {
+                font-size: 0.9rem;
+            }
+            
+            .search-input {
+                padding: 10px 35px 10px 12px;
+                font-size: 0.85rem;
+            }
+            
+            .filter-btn {
+                padding: 6px 12px;
+                font-size: 0.75rem;
+            }
+            
+            .channel-card {
+                padding: 10px;
+            }
+            
+            .channel-card img {
+                width: 45px;
+                height: 45px;
+                margin-right: 10px;
+            }
+            
+            .channel-title {
+                font-size: 0.85rem;
+            }
+            
+            .channel-country {
+                font-size: 0.65rem;
+            }
+            
+            .page-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 0.7rem;
             }
         }
     </style>
@@ -503,12 +680,12 @@
         </header>
 
         <div class="player-container">
-            <div class="video-wrapper">
+            <div class="video-wrapper" id="video-wrapper">
                 <video id="video-player"></video>
                 <div class="loading-overlay" id="loading" style="display: none;">
                     <div class="loading-spinner"></div>
                 </div>
-                <div class="video-controls">
+                <div class="video-controls" id="video-controls">
                     <button class="control-btn" id="play-pause-btn">
                         <i class="fas fa-play"></i>
                     </button>
@@ -524,6 +701,9 @@
                             <div class="volume-filled" id="volume-filled"></div>
                         </div>
                     </div>
+                    <button class="control-btn" id="hide-controls-btn" title="Masquer/Afficher les contrôles">
+                        <i class="fas fa-eye-slash"></i>
+                    </button>
                     <button class="control-btn" id="fullscreen-btn">
                         <i class="fas fa-expand"></i>
                     </button>
@@ -1045,6 +1225,18 @@ https://di-yx2saj20.vo.lswcdn.net/sportitalia/smil:simotori.smil/playlist.m3u8
 https://di-yx2saj20.vo.lswcdn.net/sportitalia/smil:sisolocalcio.smil/playlist.m3u8
 #EXTINF:-1 tvg-id="SportsConnect.za@SD" tvg-logo="https://i.imgur.com/0sNWg54.png" group-title="Sports",Sports Connect (720p)
 https://origin3.afxp.telemedia.co.za/PremiumFree/sportsconnect/playlist.m3u8
+#EXTINF:-1 tvg-id="SportenFrance.fr@SD" tvg-logo="https://i.imgur.com/1IXQoWq.png" group-title="Sports",Sport En France (1080p)
+https://sp1564435593.mytvchain.info/live/sp1564435593/index.m3u8
+#EXTINF:-1 tvg-id="Sportitalia.it@SD" tvg-logo="https://i.imgur.com/0CJGGgd.png" group-title="Sports",Sportitalia (720p) [Geo-blocked]
+https://di-yx2saj20.vo.lswcdn.net/sportitalia/smil:sportitaliahd.smil/playlist.m3u8
+#EXTINF:-1 tvg-id="Sportitalia24.it@SD" tvg-logo="https://i.imgur.com/RSwnoLn.png" group-title="Sports",Sportitalia 24 (720p) [Geo-blocked]
+https://di-yx2saj20.vo.lswcdn.net/sportitalia/smil:silive24.smil/playlist.m3u8
+#EXTINF:-1 tvg-id="SportitaliaMotori.it@SD" tvg-logo="https://i.imgur.com/hu56Ya5.png" group-title="Sports",Sportitalia Motori (720p) [Geo-blocked]
+https://di-yx2saj20.vo.lswcdn.net/sportitalia/smil:simotori.smil/playlist.m3u8
+#EXTINF:-1 tvg-id="SportitaliaSolocalcio.it@SD" tvg-logo="https://i.imgur.com/hu56Ya5.png" group-title="Sports",Sportitalia Solocalcio (720p) [Geo-blocked]
+https://di-yx2saj20.vo.lswcdn.net/sportitalia/smil:sisolocalcio.smil/playlist.m3u8
+#EXTINF:-1 tvg-id="SportsConnect.za@SD" tvg-logo="https://i.imgur.com/0sNWg54.png" group-title="Sports",Sports Connect (720p)
+https://origin3.afxp.telemedia.co.za/PremiumFree/sportsconnect/playlist.m3u8
 #EXTINF:-1 tvg-id="SportsTV.tr@SD" tvg-logo="https://i.postimg.cc/sXMS2194/sportstv.png" group-title="Sports",Sports TV (720p) [Geo-blocked]
 https://live.sportstv.com.tr/hls/low/sportstv.m3u8
 #EXTINF:-1 tvg-id="SportsGrid.us@SD" tvg-logo="https://i.imgur.com/ulGKX30.png" group-title="Sports",SportsGrid (1080p)
@@ -1097,11 +1289,11 @@ https://live3.tdm.com.mo/ch4/sport_ch4.live/playlist.m3u8
 https://d1cctoeg0n48w5.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-mnixw9wn5ugmv/TeledeporteES.m3u8
 #EXTINF:-1 tvg-id="TeletrakTV.cl@SD" tvg-logo="https://i.imgur.com/NoJvlig.png" group-title="Sports",Teletrak (720p)
 https://unlimited6-cl.dps.live/sportinghd/sportinghd.smil/playlist.m3u8
-#EXTINF:-1 tvg-id="TelewebionSport.ir@SD" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/%D9%84%D9%88%DA%AF%D9%88%DB%8C_%D8%B4%D8%A8%DA%A9%D9%87_%D8%AA%D9%84%D9%88%D8%A8%DB%8C%D9%88%D9%86_%D9%88%D8%B1%D8%B2%D8%B4%DB%8C_%DB%B1.png/240px-%D9%84%D9%88%DA%AF%D9%88%DB%8C_%D8%B4%D8%A8%DA%A9%D9%87_%D8%AA%D9%84%D9%88%D8%A8%DB%8C%D9%88%D9%86_%D9%88%D8%B1%D8%B2%D8%B4%DB%8C_%DB%B1.png" group-title="Sports",Telewebion Sport
+#EXTINF:-1 tvg-id="TelewebionSport.ir@SD" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/%D9%84%D9%88%DA%AF%D9%88%DB%8C%D8%B4%D8%A8%DA%A9%D9%87_%D8%AA%D9%84%D9%88%D8%A8%DB%8C%D9%88%D9%86_%D9%88%D8%B1%D8%B2%D8%B4%DB%8C_%DB%B1.png/240px-%D9%84%D9%88%DA%AF%D9%88%DB%8C_%D8%B4%D8%A8%DA%A9%D9%87_%D8%AA%D9%84%D9%88%D8%A8%DB%8C%D9%88%D9%86_%D9%88%D8%B1%D8%B2%D8%B4%DB%8C_%DB%B1.png" group-title="Sports",Telewebion Sport
 https://hidden-mud-9dcf.nhhwkiszzzvcuojxdo.workers.dev/?url=https://live-azd1109.telewebion.com/ek/sport1/live/1080p/index.m3u8
-#EXTINF:-1 tvg-id="TelewebionSport2.ir@SD" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/%D9%84%D9%88%DA%AF%D9%88%DB%8C_%D8%B4%D8%A8%DA%A9%D9%87_%D8%AA%D9%84%D9%88%D8%A8%DB%8C%D9%88%D9%86_%D9%88%D8%B1%D8%B2%D8%B4%DB%8C_%DB%B1.png/240px-%D9%84%D9%88%DA%AF%D9%88%DB%8C_%D8%B4%D8%A8%DA%A9%D9%87_%D8%AA%D9%84%D9%88%D8%A8%DB%8C%D9%88%D9%86_%D9%88%D8%B1%D8%B2%D8%B4%DB%8C_%DB%B1.png" group-title="Sports",Telewebion Sport 2
+#EXTINF:-1 tvg-id="TelewebionSport2.ir@SD" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/%D9%84%D9%88%DA%AF%D9%88%DB%8C%D8%B4%D8%A8%DA%A9%D9%87_%D8%AA%D9%84%D9%88%D8%A8%DB%8C%D9%88%D9%86_%D9%88%D8%B1%D8%B2%D8%B4%DB%8C_%DB%B1.png/240px-%D9%84%D9%88%DA%AF%D9%88%DB%8C_%D8%B4%D8%A8%DA%A9%D9%87_%D8%AA%D9%84%D9%88%D8%A8%DB%8C%D9%88%D9%86_%D9%88%D8%B1%D8%B2%D8%B4%DB%8C_%DB%B1.png" group-title="Sports",Telewebion Sport 2
 https://hidden-mud-9dcf.nhhwkiszzzvcuojxdo.workers.dev/?url=https://live-azd1109.telewebion.com/ek/sport2/live/1080p/index.m3u8
-#EXTINF:-1 tvg-id="TelewebionSport3.ir@SD" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/%D9%84%D9%88%DA%AF%D9%88%DB%8C_%D8%B4%D8%A8%DA%A9%D9%87_%D8%AA%D9%84%D9%88%D8%A8%DB%8C%D9%88%D9%86_%D9%88%D8%B1%D8%B2%D8%B4%DB%8C_%DB%B1.png/240px-%D9%84%D9%88%DA%AF%D9%88%DB%8C_%D8%B4%D8%A8%DA%A9%D9%87_%D8%AA%D9%84%D9%88%D8%A8%DB%8C%D9%88%D9%86_%D9%88%D8%B1%D8%B2%D8%B4%DB%8C_%DB%B1.png" group-title="Sports",Telewebion Sport 3
+#EXTINF:-1 tvg-id="TelewebionSport3.ir@SD" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/%D9%84%D9%88%DA%AF%D9%88%DB%8C%D8%B4%D8%A8%DA%A9%D9%87_%D8%AA%D9%84%D9%88%D8%A8%DB%8C%D9%88%D9%86_%D9%88%D8%B1%D8%B2%D8%B4%DB%8C_%DB%B1.png/240px-%D9%84%D9%88%DA%AF%D9%88%DB%8C_%D8%B4%D8%A8%DA%A9%D9%87_%D8%AA%D9%84%D9%88%D8%A8%DB%8C%D9%88%D9%86_%D9%88%D8%B1%D8%B2%D8%B4%DB%8C_%DB%B1.png" group-title="Sports",Telewebion Sport 3
 https://hidden-mud-9dcf.nhhwkiszzzvcuojxdo.workers.dev/?url=https://live-azd1103.telewebion.com/ek/sport3/live/1080p/index.m3u8
 #EXTINF:-1 tvg-id="TenSportsPakistan.pk@SD" tvg-logo="https://i.imgur.com/nnqpYNm.png" group-title="Sports",Ten Sports Pakistan
 http://121.91.61.106:8000/play/a04h/index.m3u8
@@ -1245,6 +1437,8 @@ http://183.207.248.71/gitv/live1/G_JSTY/G_JSTY`;
         const channelsPerPage = 20;
         let currentChannel = null;
         let activeFilter = 'all';
+        let controlsVisible = true;
+        let controlsTimeout;
 
         // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
@@ -1270,7 +1464,10 @@ http://183.207.248.71/gitv/live1/G_JSTY/G_JSTY`;
             const volumeFilled = document.getElementById('volume-filled');
             const volumeBtn = document.getElementById('volume-btn');
             const fullscreenBtn = document.getElementById('fullscreen-btn');
+            const hideControlsBtn = document.getElementById('hide-controls-btn');
             const timeDisplay = document.getElementById('time-display');
+            const videoWrapper = document.getElementById('video-wrapper');
+            const videoControls = document.getElementById('video-controls');
 
             // Play/Pause
             playPauseBtn.addEventListener('click', togglePlayPause);
@@ -1287,9 +1484,30 @@ http://183.207.248.71/gitv/live1/G_JSTY/G_JSTY`;
             // Fullscreen
             fullscreenBtn.addEventListener('click', toggleFullscreen);
 
+            // Hide/Show controls
+            hideControlsBtn.addEventListener('click', toggleControlsVisibility);
+
             // Mettre à jour le temps
             video.addEventListener('loadedmetadata', updateTimeDisplay);
             video.addEventListener('timeupdate', updateTimeDisplay);
+
+            // Afficher les contrôles au survol de la vidéo
+            videoWrapper.addEventListener('mousemove', showControlsTemporarily);
+            videoWrapper.addEventListener('mouseleave', hideControlsAfterDelay);
+
+            // Afficher les contrôles lorsque la vidéo est en pause
+            video.addEventListener('pause', () => {
+                if (controlsVisible === false) {
+                    toggleControlsVisibility();
+                }
+            });
+
+            // Masquer les contrôles lorsque la vidéo est en lecture
+            video.addEventListener('play', () => {
+                if (controlsVisible === true) {
+                    hideControlsAfterDelay();
+                }
+            });
         }
 
         function togglePlayPause() {
@@ -1298,9 +1516,13 @@ http://183.207.248.71/gitv/live1/G_JSTY/G_JSTY`;
             if (video.paused) {
                 video.play();
                 icon.className = 'fas fa-pause';
+                hideControlsAfterDelay();
             } else {
                 video.pause();
                 icon.className = 'fas fa-play';
+                if (controlsVisible === false) {
+                    toggleControlsVisibility();
+                }
             }
         }
 
@@ -1361,6 +1583,46 @@ http://183.207.248.71/gitv/live1/G_JSTY/G_JSTY`;
             } else {
                 document.exitFullscreen();
             }
+        }
+
+        function toggleControlsVisibility() {
+            const videoControls = document.getElementById('video-controls');
+            const hideControlsBtn = document.querySelector('#hide-controls-btn i');
+            
+            controlsVisible = !controlsVisible;
+            
+            if (controlsVisible) {
+                videoControls.classList.remove('hidden');
+                hideControlsBtn.className = 'fas fa-eye-slash';
+                clearTimeout(controlsTimeout);
+            } else {
+                videoControls.classList.add('hidden');
+                hideControlsBtn.className = 'fas fa-eye';
+            }
+        }
+
+        function showControlsTemporarily() {
+            if (!controlsVisible) {
+                const videoControls = document.getElementById('video-controls');
+                videoControls.classList.remove('hidden');
+                
+                clearTimeout(controlsTimeout);
+                controlsTimeout = setTimeout(() => {
+                    if (!video.paused && controlsVisible === false) {
+                        videoControls.classList.add('hidden');
+                    }
+                }, 3000);
+            }
+        }
+
+        function hideControlsAfterDelay() {
+            clearTimeout(controlsTimeout);
+            controlsTimeout = setTimeout(() => {
+                if (!video.paused && controlsVisible === false) {
+                    const videoControls = document.getElementById('video-controls');
+                    videoControls.classList.add('hidden');
+                }
+            }, 3000);
         }
 
         function updateTimeDisplay() {
